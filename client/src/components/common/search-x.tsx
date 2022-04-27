@@ -57,6 +57,7 @@ export default function SearchX(props: SearchXProps) {
 
     function submitResult() {
         if (input != "" && autocomplete.length > 0) {
+            setVisibleAutocomplete(false);
             navigate(`${RESULTS}/${input}`);
         }
     }
@@ -122,8 +123,9 @@ export default function SearchX(props: SearchXProps) {
                             <Line key={i}>
                                 <ResultLink
                                     onMouseOver={(e) => setActiveLine(i)}
+                                    onClick={() => submitResult()}
                                     active={i === activeLine ? true : false}
-                                    to={`${RESULTS}/${input}`}
+                                    // to={`${RESULTS}/${input}`}
                                 >
                                     <SearchIconMin src={'/assets/images/loupe.svg'} />
                                     {input}<Bold>{otherTextPart}</Bold>...

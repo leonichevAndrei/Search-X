@@ -98,7 +98,8 @@ export const Line = styled.div`
 `;
 
 type ResultLinkProps = { active: boolean };
-export const ResultLink = styled(Link)`
+export const ResultLink = styled.a`
+    cursor: pointer;
     white-space: pre;
     text-decoration: none;
     display: flex;

@@ -15,8 +15,10 @@ export default function SearchResults() {
         if (input !== undefined) {
             const start = Date.now();
             new Promise<any>((resolve, reject) => {
-                const res = getSearchResults(input, data, data.length);
-                resolve(res);
+                setTimeout(() => {
+                    const res = getSearchResults(input, data, data.length);
+                    resolve(res);
+                }, Math.random() * 100);
             }).then(val => {
                 const end = Date.now();
                 searchingTime.current = (end - start) / 1000;
