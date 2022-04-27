@@ -6,19 +6,19 @@ export const InputBox = styled.div`
     background: white;
     border-radius: 15px;
     box-shadow: 0 2px 7px #a7a7a7;
-    overflow: hidden;
+    overflow: visible;
 `;
 
 export const VisiblePart = styled.div`
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
+    overflow: visible;
 `;
 
 export const Left = styled.div`
     width: 15px;
     padding: 10px 30px;
-    /* background-color: #dba7a7; */
 `;
 
 export const SearchIcon = styled.img`
@@ -34,12 +34,10 @@ export const SearchIconMin = styled(SearchIcon)`
 `;
 
 export const Center = styled.div`
-    /* background-color: #b7e484; */
     flex-grow: 1;
 `;
 
 export const SearchInput = styled.input`
-    /* background-color: #d39d5c; */
     border: none;
     width: 100%;
     height: 46px;
@@ -53,18 +51,43 @@ export const SearchInput = styled.input`
 export const Right = styled.div`
     width: 15px;
     padding: 10px 30px;
-    /* background-color: #97d3e6; */
+    overflow: visible;
 `;
+
+export const Microphone = styled.a`
+    position: relative;
+    overflow: visible;
+    cursor: pointer;
+`;
+
+type MicIconProps = { micActive: boolean };
 
 export const MicIcon = styled.img`
-    position: relative;
-    top: 2px;
+    position: absolute;
+    top: 3px;
+    width: 15px;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-fill-mode: none;
+    animation-name: ${(props: MicIconProps) => props.micActive ? "pulsing" : "none"};;
+    animation-play-state: ${(props: MicIconProps) => props.micActive ? "running" : "paused"};
+    @keyframes pulsing {
+        0% {
+            transform: scale(1, 1);
+        }
+        50% {
+            transform: scale(1.4, 1.4);
+        }
+        100% {
+            transform: scale(1, 1);
+        }
+    }
 `;
 
-type AutocompleteProps = {visibility: boolean};
+type AutocompleteProps = { visibility: boolean };
 export const Autocomplete = styled.div`
     padding-bottom: 8px;
-    display: ${(props: AutocompleteProps) => props.visibility ? "block": "none"};
+    display: ${(props: AutocompleteProps) => props.visibility ? "block" : "none"};
 `;
 
 export const Line = styled.div`
@@ -73,8 +96,9 @@ export const Line = styled.div`
     line-height: 30px;
 `;
 
-type ResultLinkProps = {active: boolean};
+type ResultLinkProps = { active: boolean };
 export const ResultLink = styled(Link)`
+    white-space: pre;
     text-decoration: none;
     display: flex;
     flex-grow: 1;

@@ -1,7 +1,10 @@
+import { PageBody } from "../styled/common/common";
 
 export default function SearchResults() {
 
     return (
-        <div>SearchResults</div>
+        <PageBody>
+            SearchResults
+        </PageBody>
     );
 }

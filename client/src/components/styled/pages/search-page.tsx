@@ -19,5 +19,7 @@ export const Logo = styled.img`
 `;
 
 export const SearchBottom = styled.div`
-    
+`;
+
+export const Bold = styled.b`
 `;
