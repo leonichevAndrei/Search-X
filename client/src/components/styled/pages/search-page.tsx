@@ -1,5 +1,13 @@
 import styled from "styled-components";
 
+export const PageBody = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    align-items: center;
+    align-content: center;
+`;
 
 export const SearchBox = styled.div`
     display: flex;
@@ -19,6 +27,10 @@ export const Logo = styled.img`
 `;
 
 export const SearchBottom = styled.div`
+    position: absolute;
+    left: 50%;
+    top: 100px;
+    transform: translate(-50%, 0);
 `;
 
 export const Bold = styled.b`

@@ -88,6 +88,7 @@ type AutocompleteProps = { visibility: boolean };
 export const Autocomplete = styled.div`
     padding-bottom: 8px;
     display: ${(props: AutocompleteProps) => props.visibility ? "block" : "none"};
+    overflow: hidden;
 `;
 
 export const Line = styled.div`

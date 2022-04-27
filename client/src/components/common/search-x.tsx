@@ -1,17 +1,22 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { InputBox, VisiblePart, Left, SearchIcon, Center, SearchInput, Right, MicIcon, Autocomplete, Line, ResultLink, SearchIconMin, Microphone } from "../styled/common/search-x";
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import data from "../../data/data.json";
 import { Bold } from "../styled/pages/search-page";
 import { useNavigate } from "react-router-dom";
+import getSearchResults from "../../util/get-search-results";
 
 const MAX_INPUT = 40;
-const LIST_URL = "/search/list";
-const RESULT_URL = "/search/result";
+const RESULTS = "/search/results";
 
-export default function SearchX() {
+type SearchXProps = { initInputValue: string }
 
-    const [input, setInput] = useState("");
+export default function SearchX(props: SearchXProps) {
+
+    const { initInputValue } = props;
+
+    const showAutocomp = useRef(false);
+    const [input, setInput] = useState(initInputValue);
     const [activeLine, setActiveLine] = useState(0);
     const [visibleAutocomp, setVisibleAutocomplete] = useState(false);
     const [autocomplete, setAutocomplete] = useState(new Array());
@@ -32,20 +37,12 @@ export default function SearchX() {
     }, [listening, transcript, resetTranscript]);
 
     useEffect(() => {
-        if (!listening && input != "") {
-            const results = [];
-            const reg = new RegExp(`^${input}`, "i");
-            for (let i = 0; i < data.length; i++) {
-                if (results.length < 10) {
-                    if (data[i].title.search(reg) !== -1) {
-                        results.push(data[i]);
-                    }
-                } else {
-                    break;
-                }
-            }
+        if (!listening && input != "" && showAutocomp.current) {
+            const results = getSearchResults(input, data, 10);
             setAutocomplete(results);
             toggleAutocomplete(results);
+        } else {
+            showAutocomp.current = true;
         }
     }, [input, listening])
 
@@ -60,7 +57,7 @@ export default function SearchX() {
 
     function submitResult() {
         if (input != "" && autocomplete.length > 0) {
-            navigate(`${LIST_URL}/${input}`);
+            navigate(`${RESULTS}/${input}`);
         }
     }
 
@@ -86,9 +83,9 @@ export default function SearchX() {
                                 if (e.key === "Enter") {
                                     submitResult();
                                 } else if (e.key === "ArrowDown" && visibleAutocomp) {
-                                    activeLine < 9 ? setActiveLine(activeLine + 1) : void(0);
+                                    activeLine < 9 ? setActiveLine(activeLine + 1) : void (0);
                                 } else if (e.key === "ArrowUp" && visibleAutocomp) {
-                                    activeLine > 0 ? setActiveLine(activeLine - 1) : void(0);
+                                    activeLine > 0 ? setActiveLine(activeLine - 1) : void (0);
                                 }
                             }}
                             onInput={(e) => {
@@ -126,10 +123,10 @@ export default function SearchX() {
                                 <ResultLink
                                     onMouseOver={(e) => setActiveLine(i)}
                                     active={i === activeLine ? true : false}
-                                    to={`${RESULT_URL}/${autocomplete[activeLine].id}`}
+                                    to={`${RESULTS}/${input}`}
                                 >
                                     <SearchIconMin src={'/assets/images/loupe.svg'} />
-                                    <Bold>{input}</Bold>{otherTextPart}...
+                                    {input}<Bold>{otherTextPart}</Bold>...
                                 </ResultLink>
                             </Line>
                         );
