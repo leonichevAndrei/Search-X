@@ -5,8 +5,9 @@ import data from "../../data/data.json";
 import { Bold } from "../styled/pages/search-page";
 import { useNavigate } from "react-router-dom";
 
-
 const MAX_INPUT = 40;
+const LIST_URL = "/search/list";
+const RESULT_URL = "/search/result";
 
 export default function SearchX() {
 
@@ -59,7 +60,7 @@ export default function SearchX() {
 
     function submitResult() {
         if (input != "" && autocomplete.length > 0) {
-            navigate("/search/results");
+            navigate(`${LIST_URL}/${input}`);
         }
     }
 
@@ -85,9 +86,9 @@ export default function SearchX() {
                                 if (e.key === "Enter") {
                                     submitResult();
                                 } else if (e.key === "ArrowDown" && visibleAutocomp) {
-                                    activeLine < 9 ? setActiveLine(activeLine + 1) : void (0);
+                                    activeLine < 9 ? setActiveLine(activeLine + 1) : void(0);
                                 } else if (e.key === "ArrowUp" && visibleAutocomp) {
-                                    activeLine > 0 ? setActiveLine(activeLine - 1) : void (0);
+                                    activeLine > 0 ? setActiveLine(activeLine - 1) : void(0);
                                 }
                             }}
                             onInput={(e) => {
@@ -125,7 +126,7 @@ export default function SearchX() {
                                 <ResultLink
                                     onMouseOver={(e) => setActiveLine(i)}
                                     active={i === activeLine ? true : false}
-                                    to="/search/results"
+                                    to={`${RESULT_URL}/${autocomplete[activeLine].id}`}
                                 >
                                     <SearchIconMin src={'/assets/images/loupe.svg'} />
                                     <Bold>{input}</Bold>{otherTextPart}...
