@@ -13,24 +13,18 @@ export default function SearchResults() {
     useEffect(() => {
         if (input !== undefined) {
             const start = Date.now();
-            new Promise<any>((resolve, reject) => {
-                setTimeout(() => {
-                    fetch("http://localhost:3001/data")
-                        .then((response) => {
-                            return response.json();
-                        })
-                        .then((data) => {
-                            const res = getSearchResults(input, data, data.length);
-                            resolve(res);
-                        }).catch((err) => {
-                            reject(err);
-                        });
-                }, Math.random() * 100);
-            }).then(val => {
-                const end = Date.now();
-                searchingTime.current = (end - start) / 1000;
-                setResults(val);
-            })
+            fetch("http://localhost:3001/data")
+                .then((response) => {
+                    return response.json();
+                })
+                .then((data) => {
+                    return getSearchResults(input, data, data.length);
+                })
+                .then((results) => {
+                    const end = Date.now();
+                    searchingTime.current = (end - start) / 1000;
+                    setResults(results);
+                });
         }
     }, [input]);
 
