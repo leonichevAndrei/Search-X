@@ -63,6 +63,26 @@ export const GetResults = styled.div`
     padding: 10px 0 30px;
 `;
 
+export const ResultsPagination = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+`;
+
+type PageProps = { currentPage: boolean }
+
+export const Page = styled.a`
+    display: block;
+    cursor: ${(props: PageProps) => props.currentPage ? "default" : "pointer"};
+    padding: 0 3px 5px 3px;
+    color: ${(props: PageProps) => props.currentPage ? "black" : "#1a0dab"};
+    text-decoration: ${(props: PageProps) => props.currentPage ? "none" : "underline"};
+    &:hover {
+        text-decoration: none;
+    }
+`;
+
 export const ResultLine = styled.div`
     padding: 15px 0 0 0;
 `;
