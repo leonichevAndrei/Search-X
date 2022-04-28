@@ -2,7 +2,7 @@ export const MAX_INPUT = 40;
 export const MAX_RESULTS = 10;
 export const TITLE_MAX_LENGTH = 100;
 export const DESC_MAX_LENGTH = 190;
-export const PLACEHOLDER = "Input a keywords or type a URL";
+export const PLACEHOLDER = "Start typing a keywords like: lorem | amet | quis";
 
 export const LOGO_PATH = "/assets/images/searchX.svg";
 export const LOUPE_PATH = "/assets/images/loupe.svg";
