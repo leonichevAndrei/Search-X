@@ -1,7 +1,6 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { InputBox, VisiblePart, Left, SearchIcon, Center, SearchInput, Right, MicIcon, Autocomplete, Line, ResultLink, SearchIconMin, Microphone } from "../styled/common/search-x";
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import data from "../../data/data.json";
 import { Bold } from "../styled/pages/search-page";
 import { useNavigate } from "react-router-dom";
 import getSearchResults from "../../util/get-search-results";
@@ -38,9 +37,15 @@ export default function SearchX(props: SearchXProps) {
 
     useEffect(() => {
         if (!listening && input != "" && showAutocomp.current) {
-            const results = getSearchResults(input, data, 10);
-            setAutocomplete(results);
-            toggleAutocomplete(results);
+            fetch("http://localhost:3001/data")
+                .then((response) => {
+                    return response.json();
+                })
+                .then((data) => {
+                    const results = getSearchResults(input, data, 10);
+                    setAutocomplete(results);
+                    toggleAutocomplete(results);
+                });
         } else {
             showAutocomp.current = true;
         }
@@ -125,7 +130,7 @@ export default function SearchX(props: SearchXProps) {
                                     onMouseOver={(e) => setActiveLine(i)}
                                     onClick={() => submitResult()}
                                     active={i === activeLine ? true : false}
-                                    // to={`${RESULTS}/${input}`}
+                                // to={`${RESULTS}/${input}`}
                                 >
                                     <SearchIconMin src={'/assets/images/loupe.svg'} />
                                     {input}<Bold>{otherTextPart}</Bold>...

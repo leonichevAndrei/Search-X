@@ -2,7 +2,6 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import SearchX from "../common/search-x";
 import { Desc, GetInfo, GetResults, LogoArea, LogoMin, ResultLine, ResultsBlock, ResultsPageBody, SearchBlock, SearchComp, SearchCompAbs, Title, TitleLink } from "../styled/pages/search-results";
-import data from "../../data/data.json";
 import getSearchResults from "../../util/get-search-results";
 
 export default function SearchResults() {
@@ -16,8 +15,16 @@ export default function SearchResults() {
             const start = Date.now();
             new Promise<any>((resolve, reject) => {
                 setTimeout(() => {
-                    const res = getSearchResults(input, data, data.length);
-                    resolve(res);
+                    fetch("http://localhost:3001/data")
+                        .then((response) => {
+                            return response.json();
+                        })
+                        .then((data) => {
+                            const res = getSearchResults(input, data, data.length);
+                            resolve(res);
+                        }).catch((err) => {
+                            reject(err);
+                        });
                 }, Math.random() * 100);
             }).then(val => {
                 const end = Date.now();
