@@ -86,7 +86,7 @@ export default function SearchResults() {
                             })}
                     </GetResults>
                     <ResultsPagination>
-                        {[...Array(pagesCount)].map((elm, i) => {
+                        {pagesCount > 1 && [...Array(pagesCount)].map((elm, i) => {
                             return (
                                 <Page onClick={() => setPageID(i)} currentPage={pageID === i}>{i + 1}</Page>
                             );

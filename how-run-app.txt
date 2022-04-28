@@ -1,0 +1,9 @@
+client: 
+- install all packages via NPM: "npm i" | "npm install"
+- run application: "npm start" | "npm run start"
+
+server:
+- run json server: "json-server db.json --watch --port 3001"
+
+browser: 
+- go to http://localhost:3000/
