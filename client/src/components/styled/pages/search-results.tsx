@@ -76,10 +76,10 @@ export const Page = styled.a`
     display: block;
     cursor: ${(props: PageProps) => props.currentPage ? "default" : "pointer"};
     padding: 0 3px 5px 3px;
-    color: ${(props: PageProps) => props.currentPage ? "black" : "#1a0dab"};
-    text-decoration: ${(props: PageProps) => props.currentPage ? "none" : "underline"};
+    color: ${(props: PageProps) => props.currentPage ? "#1a0dab" : "#9f9f9f"};
+    text-decoration: ${(props: PageProps) => props.currentPage ? "underline" : "none"};
     &:hover {
-        text-decoration: none;
+        text-decoration: underline;
     }
 `;
 
