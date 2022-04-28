@@ -1,12 +1,11 @@
-import { Fragment, useEffect, useRef, useState } from "react";
-import { InputBox, VisiblePart, Left, SearchIcon, Center, SearchInput, Right, MicIcon, Autocomplete, Line, ResultLink, SearchIconMin, Microphone } from "../styled/common/search-x";
+import { Fragment, useContext, useEffect, useRef, useState } from "react";
+import { InputBox, VisiblePart, Left, SearchIcon, Center, SearchInput, Right, MicIcon, Autocomplete, Line, ResultLink, SearchIconMin, Microphone, RemoveLink } from "../styled/common/search-x";
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import { Bold } from "../styled/pages/search-page";
 import { useNavigate } from "react-router-dom";
 import getSearchResults from "../../util/get-search-results";
-
-const MAX_INPUT = 40;
-const RESULTS = "/search/results";
+import { Context } from "../../store/context";
+import { RESULTS_ROUTE, MAX_INPUT, SERVER_HTTP, MAX_RESULTS, LOUPE_PATH, PLACEHOLDER, MIC_PATH } from "../../config/main-config";
 
 type SearchXProps = { initInputValue: string }
 
@@ -14,6 +13,7 @@ export default function SearchX(props: SearchXProps) {
 
     const { initInputValue } = props;
 
+    const context = useContext(Context);
     const showAutocomp = useRef(false);
     const [input, setInput] = useState(initInputValue);
     const [activeLine, setActiveLine] = useState(0);
@@ -37,12 +37,12 @@ export default function SearchX(props: SearchXProps) {
 
     useEffect(() => {
         if (!listening && input != "" && showAutocomp.current) {
-            fetch("http://localhost:3001/data")
+            fetch(SERVER_HTTP)
                 .then((response) => {
                     return response.json();
                 })
                 .then((data) => {
-                    const results = getSearchResults(input, data, 10);
+                    const results = getSearchResults(input, data, MAX_RESULTS);
                     setAutocomplete(results);
                     toggleAutocomplete(results);
                 });
@@ -63,84 +63,85 @@ export default function SearchX(props: SearchXProps) {
     function submitResult() {
         if (input != "" && autocomplete.length > 0) {
             setVisibleAutocomplete(false);
-            navigate(`${RESULTS}/${input}`);
+            navigate(`${RESULTS_ROUTE}/${input}/${autocomplete[activeLine].id}`);
+        }
+    }
+
+    function removeFromRecent(id: string) {
+        const ids = context.recentlySearchedIds;
+        if (ids.indexOf(id) !== -1) {
+            const newIds = ids.filter((elm) => elm !== id);
+            context.changeRecentlySearchedIds(newIds);
         }
     }
 
     return (
-        <Fragment>
-            {/* FOR DEBUGGING: */}
-            {/* <div style={{textAlign: "center"}}>{`input: ${input}`}</div>
-            <div style={{textAlign: "center"}}>{`visibleAutocomp: ${visibleAutocomp}`}</div>
-            <div style={{textAlign: "center"}}>{`autocomplete.length: ${autocomplete.length}`}</div>
-            <div style={{textAlign: "center"}}>&nbsp;</div>
-            <div style={{textAlign: "center"}}>{`listening: ${listening}`}</div>
-            <div style={{textAlign: "center"}}>{`transcript: ${transcript}`}</div>
-            <div style={{textAlign: "center"}}>&nbsp;</div> */}
-            <InputBox>
-                <VisiblePart>
-                    <Left>
-                        <SearchIcon src={'/assets/images/loupe.svg'} />
-                    </Left>
-                    <Center>
-                        <SearchInput maxLength={MAX_INPUT} autoFocus value={input}
-                            placeholder="Input a keywords or type a URL"
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                    submitResult();
-                                } else if (e.key === "ArrowDown" && visibleAutocomp) {
-                                    activeLine < 9 ? setActiveLine(activeLine + 1) : void (0);
-                                } else if (e.key === "ArrowUp" && visibleAutocomp) {
-                                    activeLine > 0 ? setActiveLine(activeLine - 1) : void (0);
-                                }
-                            }}
-                            onInput={(e) => {
-                                setInput(e.currentTarget.value);
-                                if (e.currentTarget.value === "") {
-                                    setAutocomplete(new Array());
-                                    setVisibleAutocomplete(false);
-                                    setActiveLine(0);
-                                }
-                            }}
-                            onFocus={() => toggleAutocomplete(autocomplete)}
-                            onBlur={() => {
-                                if (!blockAutocomp) {
-                                    setVisibleAutocomplete(false);
-                                }
-                            }}
-                        />
-                    </Center>
-                    <Right>
-                        {browserSupportsSpeechRecognition &&
-                            <Microphone onClick={() => SpeechRecognition.startListening()}>
-                                <MicIcon micActive={listening} src={'/assets/images/mic.svg'} />
-                            </Microphone>}
-                    </Right>
-                </VisiblePart>
-                <Autocomplete visibility={visibleAutocomp}
-                    onMouseOver={() => setBlockAutocomp(true)}
-                    onMouseOut={() => setBlockAutocomp(false)}
-                >
-                    {autocomplete.map((elm, i) => {
-                        const otherTextPart = (elm.title.replace(new RegExp(input, "i"), ""))
-                            .slice(0, MAX_INPUT - input.length);
-                        return (
-                            <Line key={i}>
-                                <ResultLink
-                                    onMouseOver={(e) => setActiveLine(i)}
-                                    onClick={() => submitResult()}
-                                    active={i === activeLine ? true : false}
-                                // to={`${RESULTS}/${input}`}
-                                >
-                                    <SearchIconMin src={'/assets/images/loupe.svg'} />
-                                    {input}<Bold>{otherTextPart}</Bold>...
-                                </ResultLink>
-                            </Line>
-                        );
-                    })}
-                </Autocomplete>
-            </InputBox>
-        </Fragment>
+        <InputBox>
+            <VisiblePart>
+                <Left>
+                    <SearchIcon src={LOUPE_PATH} />
+                </Left>
+                <Center>
+                    <SearchInput maxLength={MAX_INPUT} autoFocus value={input}
+                        placeholder={PLACEHOLDER}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                submitResult();
+                            } else if (e.key === "ArrowDown" && visibleAutocomp) {
+                                activeLine < 9 ? setActiveLine(activeLine + 1) : void (0);
+                            } else if (e.key === "ArrowUp" && visibleAutocomp) {
+                                activeLine > 0 ? setActiveLine(activeLine - 1) : void (0);
+                            }
+                        }}
+                        onInput={(e) => {
+                            setInput(e.currentTarget.value);
+                            if (e.currentTarget.value === "") {
+                                setAutocomplete(new Array());
+                                setVisibleAutocomplete(false);
+                                setActiveLine(0);
+                            }
+                        }}
+                        onFocus={() => toggleAutocomplete(autocomplete)}
+                        onBlur={() => {
+                            if (!blockAutocomp) {
+                                setVisibleAutocomplete(false);
+                            }
+                        }}
+                    />
+                </Center>
+                <Right>
+                    {browserSupportsSpeechRecognition &&
+                        <Microphone onClick={() => SpeechRecognition.startListening()}>
+                            <MicIcon micActive={listening} src={MIC_PATH} />
+                        </Microphone>}
+                </Right>
+            </VisiblePart>
+            <Autocomplete visibility={visibleAutocomp}
+                onMouseOver={() => setBlockAutocomp(true)}
+                onMouseOut={() => setBlockAutocomp(false)}
+            >
+                {autocomplete.map((elm, i) => {
+                    const otherTextPart = (elm.title.replace(new RegExp(input, "i"), ""))
+                        .slice(0, MAX_INPUT - input.length);
+                    return (
+                        <Line key={i}
+                            onMouseOver={(e) => setActiveLine(i)}
+                            active={i === activeLine ? true : false}
+                        >
+                            <ResultLink
+                                recentlySearched={context.recentlySearchedIds.indexOf(elm.id) !== -1 ? true : false}
+                                onClick={() => submitResult()}
+                            >
+                                <SearchIconMin src={LOUPE_PATH} />
+                                {input}<Bold>{otherTextPart}</Bold>...
+                            </ResultLink>
+                            {context.recentlySearchedIds.indexOf(elm.id) !== -1
+                                && <RemoveLink onClick={() => removeFromRecent(elm.id)}>Remove</RemoveLink>}
+                        </Line>
+                    );
+                })}
+            </Autocomplete>
+        </InputBox>
     );
 }
 

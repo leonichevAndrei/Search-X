@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 export const ResultsPageBody = styled.div`
@@ -24,6 +25,10 @@ export const LogoArea = styled.div`
     height: 48px;
     box-sizing: border-box;
     padding-right: 10px;
+`;
+
+export const LogoLink = styled(Link)`
+    
 `;
 
 export const LogoMin = styled.img`
@@ -66,8 +71,10 @@ export const Title = styled.div`
     padding-bottom: 5px;
 `;
 
-export const TitleLink = styled.a`
-    color: #1a0dab;
+type TitleLinkProps = { recentlySearched: boolean };
+
+export const TitleLink = styled(Link)`
+    color: ${(props: TitleLinkProps) => props.recentlySearched ? "#7100ad" : "#1a0dab"};
     text-decoration: none;
     font-size: 1.2em;
     &:hover {

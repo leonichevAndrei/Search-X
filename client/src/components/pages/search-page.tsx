@@ -1,3 +1,4 @@
+import { LOGO_PATH } from '../../config/main-config';
 import SearchX from '../common/search-x';
 import { Logo, PageBody, SearchBottom, SearchBox, SearchTop } from '../styled/pages/search-page'
 
@@ -7,7 +8,7 @@ export default function SearchPage() {
         <PageBody>
             <SearchBox>
                 <SearchTop>
-                    <Logo src={'/assets/images/searchX.svg'} />
+                    <Logo src={LOGO_PATH} />
                 </SearchTop>
                 <SearchBottom>
                     <SearchX initInputValue=""/>

@@ -91,13 +91,21 @@ export const Autocomplete = styled.div`
     overflow: hidden;
 `;
 
+type LineProps = { active: boolean }
+
 export const Line = styled.div`
     background-color: #ccc;
     height: 35px;
     line-height: 30px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    width: 100%;
+    background-color: ${(props: LineProps) => props.active ? "#dedede" : "white"};
 `;
 
-type ResultLinkProps = { active: boolean };
+type ResultLinkProps = { recentlySearched: boolean };
+
 export const ResultLink = styled.a`
     cursor: pointer;
     white-space: pre;
@@ -108,6 +116,14 @@ export const ResultLink = styled.a`
     padding: 0 10px;
     height: 35px;
     line-height: 35px;
-    color: black;
-    background-color: ${(props: ResultLinkProps) => props.active ? "#dedede" : "white"};
+    color: ${(props: ResultLinkProps) => props.recentlySearched ? "#7100ad" : "black"};
+`;
+
+export const RemoveLink = styled.a`
+    font-size: 0.8em;
+    cursor: pointer;
+    width: 55px;
+    height: 35px;
+    color: #9f9f9f;
+    text-decoration: underline;
 `;
